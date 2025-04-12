@@ -9,6 +9,7 @@ Camera.new = function(width,height,x,y,scaleX,scaleY)
     instance.y = y
     instance.scaleX = scaleX
     instance.scaleY = scaleyY
+    instance.canvas = love.graphics.newCanvas(instance.width,instance.height)
     return instance
 end
 

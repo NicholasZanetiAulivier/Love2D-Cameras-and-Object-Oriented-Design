@@ -1,23 +1,38 @@
 --[[
     A Game object stores all the game items, including the global coordinate system.
     It contains all processes and is instantiated once in main.lua
-    Game should naturally have a positive y and a positive x axis. With positive y being up and positive x being right
+    Game should naturally have a positive y and a positive x axis, with positive y being up and positive x being right
+
+    Game.cameras stores all game cameras. Each item contains
+    {
+    id : id of camera
+    camera : camera object
+    loc : {x,y} location of the camera relative to the screen
+    }
+    
+    Game.objects stores all drawable objects. Each item is part of the Drawable class
+    {
+    x : 
+    }
 ]]--
 
-Game = {cameras = {} , drawables = {{100,-100}}}
+Game = {cameras = {} , objects = {}}
 Game.__index = Game
 
 Game.Camera = require('src.modules.Camera')
 
 function Game.Camera:draw(loc)
-    for i,v in ipairs(Game.drawables) do
-        love.graphics.rectangle('fill',v[1]-loc[1],loc[2]-v[2],100,100)
+    love.graphics.setCanvas(self.canvas)
+    for i = #Game.objects,1,-1 do
+        Game.objects[i]:draw(loc[1],loc[2],self.scaleX,self.scaleY)
     end
+    love.graphics.setCanvas()
+    
 end
 
 Game.createCamera = function(id,width,height,screenX,screenY,xLoc,yLoc,xScale,yScale)
     local newCam = Game.Camera.new(width,height,xLoc,yLoc,xScale,yScale)
-    table.insert(Game.cameras,{id=id,camera=newCam,loc={screenX,screenY}})
+    table.insert(Game.cameras,{id=id,camera=newCam,loc={x=screenX,y=screenY},scale={1,1}})
 end
 
 
